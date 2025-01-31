@@ -9,21 +9,21 @@ import java.awt.event.ActionListener;
 
 /**
  *
- * @author manrajs
+ * @author manraj
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    int boardSize = 8;
-    JButton[][] buttons = new JButton[boardSize][boardSize];
-    String[] playerMarks = new String[3];
-    int currentPlayer =0;
-    boolean[] playerSet = {false,false,false};
+    JButton[][] buttons = new JButton[8][8];    // 2-d array for storing the buttons
+    String[] playerMarks = new String[3];       // array for storing marks set by the players
+    int playerCount =0;                         // for tracking the players' turn
+    boolean[] playerSet = {false,false,false};  // for checking if all the players has set their marks
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
 
+        // first row of buttons
         buttons[0][0] = jButton1;
         buttons[0][1] = jButton2;
         buttons[0][2] = jButton3;
@@ -33,6 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[0][6] = jButton7;
         buttons[0][7] = jButton8;
 
+        // second row of buttons
         buttons[1][0] = jButton9;
         buttons[1][1] = jButton10;
         buttons[1][2] = jButton11;
@@ -42,6 +43,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[1][6] = jButton15;
         buttons[1][7] = jButton16;
 
+        // third row of buttons
         buttons[2][0] = jButton17;
         buttons[2][1] = jButton18;
         buttons[2][2] = jButton19;
@@ -51,6 +53,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[2][6] = jButton23;
         buttons[2][7] = jButton24;
 
+        // fourth row of buttons
         buttons[3][0] = jButton25;
         buttons[3][1] = jButton26;
         buttons[3][2] = jButton27;
@@ -60,6 +63,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[3][6] = jButton31;
         buttons[3][7] = jButton32;
 
+        // fifth row of buttons
         buttons[4][0] = jButton33;
         buttons[4][1] = jButton34;
         buttons[4][2] = jButton35;
@@ -69,6 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[4][6] = jButton39;
         buttons[4][7] = jButton40;
 
+        // sixth row of buttons
         buttons[5][0] = jButton41;
         buttons[5][1] = jButton42;
         buttons[5][2] = jButton43;
@@ -78,6 +83,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[5][6] = jButton47;
         buttons[5][7] = jButton48;
 
+        // seventh row of buttons
         buttons[6][0] = jButton49;
         buttons[6][1] = jButton50;
         buttons[6][2] = jButton51;
@@ -87,6 +93,7 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[6][6] = jButton55;
         buttons[6][7] = jButton56;
 
+        // eighth row of buttons
         buttons[7][0] = jButton57;
         buttons[7][1] = jButton58;
         buttons[7][2] = jButton59;
@@ -96,13 +103,15 @@ public class MainFrame extends javax.swing.JFrame {
         buttons[7][6] = jButton63;
         buttons[7][7] = jButton64;
 
-        for(int row =0;row<boardSize;row++){
-            for(int col=0;col<boardSize;col++){
+        // for loop for adding action listener to all the button to know which button was clicked
+        for(int row =0;row<8;row++){
+            for(int col=0;col<8;col++){
                 buttons[row][col].addActionListener(new BoardButtonListener(row,col));
             }
         }
     }
 
+    // class for handling button clicks
     private class BoardButtonListener implements ActionListener{
         private int row,col;
 
@@ -113,26 +122,32 @@ public class MainFrame extends javax.swing.JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e){
+            // checking if all players have set their marks
             if(!allPlayerSet()){
                 JOptionPane.showMessageDialog(MainFrame.this, "All players must set their Mark first");
                 return;
             }
 
-            buttons[row][col].setText(playerMarks[currentPlayer]);
+            // set the text inside the clicked to current players' Mark
+            buttons[row][col].setText(playerMarks[playerCount]);
 
-            if(checkWin(row,col,playerMarks[currentPlayer])){
+            // checking if anyone won the game
+            if(checkWin(row,col,playerMarks[playerCount])){
                 JOptionPane.showMessageDialog(MainFrame.this,"Player " +
-                        (currentPlayer+1) + " Wins");
+                        (playerCount+1) + " Wins");
                 resetGame();
                 return;
             }
 
-            currentPlayer = (currentPlayer+1)%3;
-            playerTurn.setText("Player " + (currentPlayer+1) + " Turn");
-            buttons[row][col].setEnabled(false);
+            playerCount = (playerCount+1)%3;     // switch to next players' turn
+            buttons[row][col].setEnabled(false);    // disable the button after it is clicked
+            statusLabel.setText("Player " + (playerCount+1) + " Turn");     // update the label to let know whose turn is it
         }
     }
 
+    // to check the win conditions
+    // parameters: row, col for checking the buttons,
+    // String mark for checking which players' mark won
     boolean checkWin(int row,int col, String mark){
         return checkHorizontal(row,col,mark) ||
                 checkVertical(row,col,mark)   ||
@@ -140,8 +155,9 @@ public class MainFrame extends javax.swing.JFrame {
                 checkDiagonalTopRightToBottomLeft(mark);
     }
 
+    // checking horizontal win -
     boolean checkHorizontal(int row, int col, String mark){
-        for(int i=0;i<=boardSize-4;i++){
+        for(int i=0;i<=8-4;i++){
             if(buttons[row][i].getText().equals(mark)&&
                     buttons[row][i+1].getText().equals(mark)&&
                     buttons[row][i+2].getText().equals(mark)&&
@@ -153,8 +169,9 @@ public class MainFrame extends javax.swing.JFrame {
         return false;
     }
 
+    // checking vertical win |
     boolean checkVertical(int row, int col, String mark){
-        for(int i=0;i<=boardSize-4;i++){
+        for(int i=0;i<=8-4;i++){
             if(buttons[i][col].getText().equals(mark)&&
                     buttons[i+1][col].getText().equals(mark)&&
                     buttons[i+2][col].getText().equals(mark)&&
@@ -166,9 +183,10 @@ public class MainFrame extends javax.swing.JFrame {
         return false;
     }
 
+    //checking top left to bottom right (\)
     boolean checkDiagonalTopLeftToBottomRight(String mark){
-        for(int i=0;i<=boardSize-4;i++){
-            for(int j=0;j<=boardSize-4;j++){
+        for(int i=0;i<=8-4;i++){
+            for(int j=0;j<=8-4;j++){
                 if(buttons[i][j].getText().equals(mark) &&
                         buttons[i+1][j+1].getText().equals(mark) &&
                         buttons[i+2][j+2].getText().equals(mark) &&
@@ -181,9 +199,10 @@ public class MainFrame extends javax.swing.JFrame {
         return false;
     }
 
+    // checking top right to bottom left (/)
     boolean checkDiagonalTopRightToBottomLeft(String mark){
-        for(int i=0;i<=boardSize-4;i++){
-            for(int j=3;j<boardSize;j++){
+        for(int i=0;i<=8-4;i++){
+            for(int j=3;j<8;j++){
                 if(buttons[i][j].getText().equals(mark) &&
                         buttons[i+1][j-1].getText().equals(mark) &&
                         buttons[i+2][j-2].getText().equals(mark) &&
@@ -196,19 +215,21 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
 
-
+    // for starting the game when start button has been clicked
     void startGame(){
 
+        // getting the mark set by the players
         playerMarks[0]= mark1.getText().trim();
         playerMarks[1]= mark2.getText().trim();
         playerMarks[2]= mark3.getText().trim();
         for(int i=0;i<3;i++){
-            String tempMark=playerMarks[i];
+            String tempMark=playerMarks[i]; // temporarily storing the mark to check either if it is empty or has more than one character
             if(tempMark.isBlank()||tempMark.length()!=1){
                 JOptionPane.showMessageDialog(this, "Player " + (i + 1) + " must enter a single character as their mark.");
                 return;
             }
 
+            // checking if players has set same mark
             for (int j = 0; j < i; j++) {
                 if (tempMark.equals(playerMarks[j])) {
                     JOptionPane.showMessageDialog(this, "Player " + (i + 1) + " cannot use the same mark as Player " + (j + 1) + ".");
@@ -216,27 +237,30 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
 
+            // if everything is alright, then store the marks and set the playerSet bool value to true
             playerMarks[i] = tempMark;
             playerSet[i]=true;
         }
 
-        playerTurn.setText("Player 1 Turn");
-        NewGame.setText("Reset Board");
-
+        statusLabel.setText("Player 1 Turn");
+        NewGamebtn.setText("Reset Board");
 
     }
 
+    // to reset the game board
     void resetGame(){
-        for(int row=0;row<boardSize;row++){
-            for(int col=0;col<boardSize;col++){
-                buttons[row][col].setText("");
-                buttons[row][col].setEnabled(true);
+        for(int row=0;row<8;row++){
+            for(int col=0;col<8;col++){
+                buttons[row][col].setText("");  // clear the button text
+                buttons[row][col].setEnabled(true); // re-enable the buttons
             }
         }
-        currentPlayer = 0;
+        playerCount = 0;     // reset player turn to player 1
+        statusLabel.setText("Player 1 Turn");
 
     }
 
+    // to see if all the players have set the marks
     boolean allPlayerSet(){
         for(int i=0;i<3;i++){
             if(playerSet[i]==false){
@@ -252,19 +276,17 @@ public class MainFrame extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        NewGame = new javax.swing.JButton();
+        MainPanel = new javax.swing.JPanel();
+        LabelPanel = new javax.swing.JPanel();
+        player1label = new javax.swing.JLabel();
+        player2Label = new javax.swing.JLabel();
+        player3Label = new javax.swing.JLabel();
         mark1 = new javax.swing.JTextField();
         mark2 = new javax.swing.JTextField();
         mark3 = new javax.swing.JTextField();
-        playerTurn = new javax.swing.JLabel();
         buttonPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -330,169 +352,282 @@ public class MainFrame extends javax.swing.JFrame {
         jButton62 = new javax.swing.JButton();
         jButton63 = new javax.swing.JButton();
         jButton64 = new javax.swing.JButton();
+        NewGamePanel = new javax.swing.JPanel();
+        NewGamebtn = new javax.swing.JButton();
+        statusPanel = new javax.swing.JPanel();
+        statusLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("TicTacToe");
         setPreferredSize(new java.awt.Dimension(540, 800));
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        MainPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel2.setForeground(new java.awt.Color(204, 204, 204));
+        LabelPanel.setBackground(new java.awt.Color(204, 204, 204));
+        LabelPanel.setForeground(new java.awt.Color(204, 204, 204));
+        LabelPanel.setLayout(new java.awt.GridLayout(2, 3));
 
-        jLabel1.setText("Player 1:");
+        player1label.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        player1label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        player1label.setText("Player 1:");
+        LabelPanel.add(player1label);
 
-        jLabel2.setText("Player 2:");
+        player2Label.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        player2Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        player2Label.setText("Player 2:");
+        LabelPanel.add(player2Label);
 
-        jLabel3.setText("Player 3:");
+        player3Label.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        player3Label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        player3Label.setText("Player 3:");
+        LabelPanel.add(player3Label);
+        LabelPanel.add(mark1);
+        LabelPanel.add(mark2);
+        LabelPanel.add(mark3);
 
-        NewGame.setText("Set mark and Start Game");
-        NewGame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NewGameActionPerformed(evt);
-            }
-        });
-
-        playerTurn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        playerTurn.setText("Enter marks");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(mark1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(52, 52, 52)
-                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(mark2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(66, 66, 66)
-                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addGap(141, 141, 141)
-                                                .addComponent(NewGame, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(mark3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(playerTurn, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(31, Short.MAX_VALUE))
-        );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3});
-
-        jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel1)
-                                        .addComponent(jLabel2)
-                                        .addComponent(jLabel3)
-                                        .addComponent(mark1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(mark2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(mark3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(NewGame, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(playerTurn))
-                                .addContainerGap(12, Short.MAX_VALUE))
-        );
-
-        jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
+        MainPanel.add(LabelPanel, java.awt.BorderLayout.PAGE_START);
 
         buttonPanel.setMinimumSize(new java.awt.Dimension(400, 400));
         buttonPanel.setLayout(new java.awt.GridLayout(8, 8));
 
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
         buttonPanel.add(jButton1);
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton2);
+
+        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton3);
+
+        jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton4);
+
+        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton5);
+
+        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton6);
+
+        jButton7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton7);
+
+        jButton8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton8);
+
+        jButton9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton9);
+
+        jButton10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton10);
+
+        jButton11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton11);
+
+        jButton12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton12);
+
+        jButton13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton13);
+
+        jButton14.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton14);
+
+        jButton15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton15);
+
+        jButton16.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton16);
+
+        jButton17.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton17);
+
+        jButton18.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton18);
+
+        jButton19.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton19);
+
+        jButton20.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton20);
+
+        jButton21.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton21);
+
+        jButton22.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton22);
+
+        jButton23.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton23);
+
+        jButton24.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton24);
+
+        jButton25.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton25);
+
+        jButton26.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton26);
+
+        jButton27.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton27);
+
+        jButton28.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton28);
+
+        jButton29.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton29);
+
+        jButton30.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton30);
+
+        jButton31.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton31);
+
+        jButton32.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton32);
+
+        jButton33.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton33);
+
+        jButton34.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton34);
+
+        jButton35.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton35);
+
+        jButton36.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton36);
+
+        jButton37.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton37);
+
+        jButton38.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton38);
+
+        jButton39.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton39);
+
+        jButton40.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton40);
+
+        jButton41.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton41);
+
+        jButton42.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton42);
+
+        jButton43.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton43);
+
+        jButton44.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton44);
+
+        jButton45.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton45);
+
+        jButton46.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton46);
+
+        jButton47.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton47);
+
+        jButton48.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton48);
+
+        jButton49.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton49);
+
+        jButton50.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton50);
+
+        jButton51.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton51);
+
+        jButton52.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton52);
+
+        jButton53.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton53);
+
+        jButton54.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton54);
+
+        jButton55.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton55);
+
+        jButton56.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton56);
+
+        jButton57.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton57);
+
+        jButton58.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton58);
+
+        jButton59.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton59);
+
+        jButton60.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton60);
+
+        jButton61.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton61);
+
+        jButton62.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton62);
+
+        jButton63.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton63);
+
+        jButton64.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         buttonPanel.add(jButton64);
 
-        jPanel1.add(buttonPanel, java.awt.BorderLayout.CENTER);
+        MainPanel.add(buttonPanel, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        NewGamePanel.setLayout(new java.awt.BorderLayout());
+
+        NewGamebtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        NewGamebtn.setText("Set Mark and Start Game");
+        NewGamebtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        NewGamebtn.setPreferredSize(new java.awt.Dimension(81, 40));
+        NewGamebtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NewGamebtnActionPerformed(evt);
+            }
+        });
+        NewGamePanel.add(NewGamebtn, java.awt.BorderLayout.CENTER);
+
+        MainPanel.add(NewGamePanel, java.awt.BorderLayout.PAGE_END);
+
+        getContentPane().add(MainPanel, java.awt.BorderLayout.CENTER);
+
+        statusPanel.setBackground(new java.awt.Color(204, 204, 204));
+        statusPanel.setPreferredSize(new java.awt.Dimension(600, 30));
+        statusPanel.setLayout(new java.awt.BorderLayout());
+
+        statusLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        statusLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        statusLabel.setText("Set Mark And Then Start Game");
+        statusPanel.add(statusLabel, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(statusPanel, java.awt.BorderLayout.PAGE_START);
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>                        
+    }// </editor-fold>
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO
+
     }
 
-    private void NewGameActionPerformed(java.awt.event.ActionEvent evt) {
-        startGame();
-        resetGame();
+    private void NewGamebtnActionPerformed(java.awt.event.ActionEvent evt) {
+        startGame();        // start the game
+        resetGame();        // reset the game board
     }
 
     /**
@@ -531,8 +666,11 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify                     
-    private javax.swing.JButton NewGame;
+    // Variables declaration - do not modify
+    private javax.swing.JPanel LabelPanel;
+    private javax.swing.JPanel MainPanel;
+    private javax.swing.JPanel NewGamePanel;
+    private javax.swing.JButton NewGamebtn;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
@@ -598,14 +736,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField mark1;
     private javax.swing.JTextField mark2;
     private javax.swing.JTextField mark3;
-    private javax.swing.JLabel playerTurn;
+    private javax.swing.JLabel player1label;
+    private javax.swing.JLabel player2Label;
+    private javax.swing.JLabel player3Label;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JPanel statusPanel;
     // End of variables declaration                   
 }
